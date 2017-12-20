@@ -111,12 +111,185 @@ def create_all_datasets():
 
 
 
+
+
+def get_specific_metabo():
+	##
+	## Custom function to get GDF15 and PENTRAXIN 3 data for control
+	## and SjS patient.
+	##
+
+	input_data = open("data_control_SjS.csv", "r")
+	output_data = open("data_control_SjS_PENTRAXIN3_vs_GDF15.csv", "w")
+
+	cmpt = 0
+	DISEASE_index = -1
+	PENTRAXIN3_index = -1
+	GDF15_index = -1
+
+
+	for line in input_data:
+
+		line_in_array = line.split(",")
+		
+		## deal with the header
+		if(cmpt == 0):
+			header = "Disease,GDF15,PENTRAXIN3\n"
+			index = 0
+			for variable in line_in_array:
+				if("Disease" in variable):
+					DISEASE_index = index
+				elif("GDF15" in variable):
+					GDF15_index = index
+				elif("PENTRAXIN3" in variable):
+					PENTRAXIN3_index = index
+				index +=1
+			output_data.write(header)
+		else:
+			DISEASE_value = line_in_array[DISEASE_index]
+			PENTRAXIN3_value = line_in_array[PENTRAXIN3_index]
+			GDF15_value = line_in_array[GDF15_index]
+
+			line_to_write = str(DISEASE_value)+","+str(GDF15_value)+","+str(PENTRAXIN3_value)+"\n"
+			output_data.write(line_to_write)
+
+		cmpt += 1
+
+	output_data.close()
+	input_data.close()
+
+
+def get_treatment():
+	##
+	## custom function
+	##
+
+	input_data = open("transmart_10_08_2017_PHASE_I_II.tsv", "r")
+	output_data = open("data_with_medication.csv", "w")
+
+
+
+
+	DISEASE_index = -1
+	ABATACEPT_index = -1
+	AMALARIA_index = -1
+	ATNFALL_index = -1
+	ATNF_index = -1
+	IMSUPPR_index = -1
+	STEROID_index = -1
+	SYSABIO_index = -1
+
+	PENTRAXIN3_index = -1
+	GDF15_index = -1
+
+
+
+
+	cmpt = 0
+	for line in input_data:
+
+		line_in_array = line.split("\t")
+		
+		if(cmpt == 0):
+			
+
+			header = "DISEASE,ABATACEPT,AMALARIA,ATNFALL,IMSUPPR,STEROID,SYSABIO,PENTRAXIN3,GDF15\n"
+
+			index = 0
+			for variable in line_in_array:
+
+				if("DISEASE" in variable):
+					DISEASE_index = index
+				elif("ABATACEPT" in variable):
+					ABATACEPT_index = index
+				elif("AMALARIA" in variable):
+					AMALARIA_index = index
+				elif("ATNFALL" in variable):
+					ATNFALL_index = index
+				elif("IMSUPPR" in variable):
+					IMSUPPR_index = index
+				elif("CM STEROID" in variable):
+					STEROID_index = index
+				elif("SYSABIO" in variable):
+					SYSABIO_index = index
+				elif("PENTRAXIN" in variable):
+					PENTRAXIN3_index = index
+				elif("GDF 15" in variable):
+					GDF15_index = index
+
+				index +=1
+
+			output_data.write(header)
+		
+		else:
+
+			DISEASE_value = "choucroute"
+			ABATACEPT_value = -1
+			AMALARIA_value = -1
+			ATNFALL_value = -1
+			ATNF_value = -1
+			IMSUPPR_value = -1
+			STEROID_value = -1
+			SYSABIO_value = -1
+
+			PENTRAXIN3_value = -1
+			GDF15_value = -1
+			
+			if(line_in_array[DISEASE_index] == ""):
+				DISEASE_value = "Control"
+				ABATACEPT_value = "No"
+				AMALARIA_value = "No"
+				ATNFALL_value = "No"
+				ATNF_value = "No"
+				IMSUPPR_value = "No"
+				STEROID_value = "No"
+				SYSABIO_value = "No"
+
+				PENTRAXIN3_value = line_in_array[PENTRAXIN3_index]
+				GDF15_value = line_in_array[GDF15_index]
+
+
+
+			elif(line_in_array[DISEASE_index] == "\"SjS\""):
+				DISEASE_value = "SjS"
+				ABATACEPT_value = line_in_array[ABATACEPT_index]
+				AMALARIA_value = line_in_array[AMALARIA_index]
+				ATNFALL_value = line_in_array[ATNFALL_index]
+				ATNF_value = line_in_array[ATNF_index]
+				IMSUPPR_value = line_in_array[IMSUPPR_index]
+				STEROID_value = line_in_array[STEROID_index]
+				SYSABIO_value = line_in_array[SYSABIO_index]
+
+				PENTRAXIN3_value = line_in_array[PENTRAXIN3_index]
+				GDF15_value = line_in_array[GDF15_index]
+
+
+
+			line_to_write = DISEASE_value+","+str(ABATACEPT_value)+","+str(AMALARIA_value)+","+str(ATNFALL_value)+","+str(IMSUPPR_value)+","+str(STEROID_value)+","+str(SYSABIO_value)+","+str(PENTRAXIN3_value)+","+str(GDF15_value)+"\n"
+
+			if(line_in_array[DISEASE_index] == "\"SjS\""):
+				output_data.write(line_to_write)
+			elif(line_in_array[DISEASE_index] == ""):
+				output_data.write(line_to_write)
+
+
+				
+
+		cmpt +=1
+
+
+	output_data.close()
+	input_data.close()
+
+
 ### TEST SPACE ###
 #generate_data_file("control", "RA")
 #get_all_diseases_in_file("Luminex_data.csv")
 
 ## create control vs disease datasets
-create_all_datasets()
+#create_all_datasets()
 
+#get_specific_metabo()
+get_treatment()
 
 
