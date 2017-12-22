@@ -50,32 +50,66 @@ input_data.close()
 
 ## get only the SjS and Control patient
 patients_to_save = []
+disease_vector = []
 index = 0
 for disease in variable_to_value["Disease"]:
 	if(disease == "control"):
 		patients_to_save.append(index)
+		disease_vector.append(disease)
 	elif(disease == "SjS"):
 		patients_to_save.append(index)
+		disease_vector.append(disease)
 	index += 1
 
 ## Build all pair of variables
 ## to be analysed
+patients_to_remove = []
+
+for variable in variable_to_value.keys():
+	
+	if(variable != "Disease"):
+
+		## Get variables to test
+		## Flag patients to remove (NA values)
+		variable_vector = []
+		index = 0
+		for scalar in variable_to_value[variable]:
+			if(index in patients_to_save):
+				variable_vector.append(scalar)
+				if(scalar == ""):
+					patients_to_remove.append(index)
+			index +=1
+
+		## Remove Flag patients from disease and
+		## variables vector
+		disease_vector_clean = []
+		variable_vector_clean = []
+
+		index = 0
+		for patient in patients_to_save:
+			if(patient not in patients_to_remove):
+				if(disease_vector[index] == "control"):
+					disease_vector_clean.append(0)
+				elif(disease_vector[index] == "SjS"):
+					disease_vector_clean.append(1)
+				variable_vector_clean.append(float(variable_vector[index]))
+			index += 1	
+
+		##----------##
+		## Analysis ##
+		##----------##
+
+		## Perfrom the analysis on all pair of variables
+		## TODO : check optimal test
+		print stats.ttest_ind(disease_vector_clean,variable_vector_clean)
+
+		##--------------------------------##
+		## if p-value is good draw a plot ##
+		## save variable in an output     ##
+		## data file					  ##
+		##--------------------------------##
 
 
-## Perfrom the analysis on all pair of variables
-
-
-
-
-
-
-	##--------------------------------##
-	## if p-value is good draw a plot ##
-	## save variable in an output     ##
-	## data file					  ##
-	##--------------------------------##
-
-
-	##--------------------------------##
-	## Store everything in a log file ##
-	##--------------------------------##
+		##--------------------------------##
+		## Store everything in a log file ##
+		##--------------------------------##
